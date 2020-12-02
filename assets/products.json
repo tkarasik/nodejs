@@ -1,0 +1,7 @@
+[
+  { "categoryName": "Sports", "name": "Basketball", "itemsInStock": 7 },
+  { "categoryName": "Sports", "name": "Frisbee", "itemsInStock": 10 },
+  { "categoryName": "Electronics", "name": "Smartphone", "itemsInStock": 20 },
+  { "categoryName": "Electronics", "name": "OLED TV", "itemsInStock": 3 },
+  { "categoryName": "Fashion", "name": "Denim Jeans", "itemsInStock": 50 }
+]
