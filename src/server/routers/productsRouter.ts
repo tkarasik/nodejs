@@ -1,9 +1,11 @@
 import express from 'express';
 import { ErrorCategory } from '../../data/actionStatus';
 import { DataProvider } from '../../data/dataProvider';
+import createLogger from '../logger/logger';
 
 const router = express.Router();
 const dataProvider = new DataProvider();
+const logger = createLogger('productsRouter');
 
 router.get('/', (req, res) => {
   res.status(200).send(dataProvider.getProducts());
@@ -11,6 +13,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
+    logger.info(`Getting product with id ${req.params.id}`);
     const product = await dataProvider.getProductAsync(req.params.id);
     res.status(200).send(product);
   } catch (err) {

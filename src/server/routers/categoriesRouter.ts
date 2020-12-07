@@ -1,8 +1,10 @@
 import express from 'express';
 import { DataProvider } from '../../data/dataProvider';
+import createLogger from '../logger/logger';
 
 const router = express.Router();
 const dataProvider = new DataProvider();
+const logger = createLogger('productsRouter');
 
 router.get('/', (req, res) => {
   res.status(200).send(dataProvider.getCategories());
@@ -10,6 +12,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
+    logger.info(`Getting category with id ${req.params.id}`);
     const category = await dataProvider.getCategoryAsync(req.params.id);
     res.status(200).send(category);
   } catch (err) {
