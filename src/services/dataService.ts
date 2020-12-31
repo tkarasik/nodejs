@@ -1,26 +1,57 @@
+import fetch from 'node-fetch';
 import { Category } from './category';
 import { Product } from './product';
+import { ActionStatus, ErrorCategory } from '../utils/actionStatus';
 
-import savedProducts from '../../assets/products.json';
-import { ActionStatus, ErrorCategory } from './actionStatus';
+export class DataService {
+  private static instance: DataService;
+  private _categories: Category[] = [];
+  private _products: Product[] = [];
+  private _init = false;
 
-export class DataProvider {
-  private categories: Category[] = [];
-  private products: Product[] = [];
+  public get products(): Product[] {
+    if (!this._init) {
+      this.loadData();
+      this._init = true;
+    }
+    return this._products;
+  }
 
-  constructor() {
-    savedProducts.forEach((product) => {
-      let category = this.categories.find((category) => category.name === product.categoryName);
-      if (!category) {
-        category = new Category(product.categoryName);
-        this.categories.push(category);
-      }
-      this.products.push(new Product(category.id, product.name, product.itemsInStock));
+  public get categories(): Category[] {
+    if (!this._init) {
+      this._init = true;
+    }
+    return this._categories;
+  }
+
+  async loadData(): Promise<void> {
+    [this._products, this._categories] = await this.loadDataAsync();
+  }
+
+  async loadDataAsync(): Promise<[Product[], Category[]]> {
+    return new Promise((resolve, reject) => {
+      fetch(process.env.PRODUCTS_URL || `http://localhost:3000/products.json`)
+        .then((res) => res.json())
+        .then((json: { name: string; categoryName: string; itemsInStock: number }[]) => {
+          const products: Product[] = [];
+          const categories: Category[] = [];
+
+          json.forEach((product) => {
+            let category = this.categories.find((category) => category.name === product.categoryName);
+            if (!category) {
+              category = new Category(product.categoryName);
+              categories.push(category);
+            }
+            products.push(new Product(category.id, product.name, product.itemsInStock));
+          });
+          resolve([products, categories]);
+        })
+        .catch((error) => reject(error));
     });
   }
 
   //#region Products
-  getProducts(): Product[] {
+  async getProducts(): Promise<Product[]> {
     return this.products;
   }
 
@@ -71,7 +102,7 @@ export class DataProvider {
   }
   //#endregion
 
-  //#region Categories
+  //#region _categories
   getCategories(): Category[] {
     return this.categories;
   }
@@ -89,7 +120,7 @@ export class DataProvider {
   }
 
   addCategory(name: string): ActionStatus {
-    this.categories.push(new Category(name));
+    this._categories.push(new Category(name));
     return new ActionStatus(true);
   }
 

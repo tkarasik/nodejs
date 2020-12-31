@@ -1,4 +1,4 @@
-import { ProductsServer } from './server/server';
+import { ProductsServer } from './app';
 
 const server = new ProductsServer();
 server.Init();

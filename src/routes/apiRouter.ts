@@ -1,5 +1,5 @@
 import express from 'express';
-import { idValidator, nameValidator } from '../validators/validators';
+import { idValidator, nameValidator } from '../middleware/validators';
 import productsRouter from './productsRouter';
 import categoriesRouter from './categoriesRouter';
 

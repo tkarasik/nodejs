@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import apiRouter from './routers/apiRouter';
-import errorHandler from './errorHandlers/errorHandler';
+import apiRouter from './routes/apiRouter';
+import errorHandler from './middleware/errorHandler';
 import dotenv from 'dotenv';
 import expressWinston from 'express-winston';
 import winston from 'winston';
@@ -25,6 +25,7 @@ export class ProductsServer {
       }),
     );
 
+    this.app.use(express.static('src/static'));
     this.app.use(express.json());
     this.app.use(cors());
     this.app.use('/api', apiRouter);
