@@ -62,4 +62,3 @@ dist/**/*
 .eslintrc.js
 .prettierignore
 .prettierrc
-package-lock.json
