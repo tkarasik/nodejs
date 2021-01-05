@@ -3,10 +3,10 @@ import { addProduct, deleteProduct, editProduct, getProduct, getProducts } from 
 
 const router = express.Router();
 
-router.get('/', (req, res) => getProducts(req, res));
+router.get('/', async (req, res) => getProducts(req, res));
 router.get('/:id', async (req, res) => getProduct(req, res));
-router.post('/', (req, res) => addProduct(req, res));
-router.put('/:id', (req, res) => editProduct(req, res));
-router.delete('/:id', (req, res) => deleteProduct(req, res));
+router.post('/', async (req, res) => addProduct(req, res));
+router.put('/:id', async (req, res) => editProduct(req, res));
+router.delete('/:id', async (req, res) => deleteProduct(req, res));
 
 export default router;

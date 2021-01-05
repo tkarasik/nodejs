@@ -6,34 +6,28 @@ import createLogger from '../middleware/logger';
 const dataService = new DataService();
 const logger = createLogger('products');
 
-export function getProducts(req: Request, res: Response): void {
-  res.status(200).send(dataService.getProducts());
+export async function getProducts(req: Request, res: Response): Promise<void> {
+  const products = await dataService.getProducts();
+  res.status(200).send(products);
 }
 
 export async function getProduct(req: Request, res: Response): Promise<void> {
-  try {
     logger.info(`Getting product with id ${req.params.id}`);
-    const product = await dataService.getProductAsync(req.params.id);
-    res.status(200).send(product);
-  } catch (err) {
-    res.status(404).send(err);
-  }
+    const product = await dataService.getProduct(req.params.id);
+    if (product) res.status(200).send(product);
+    else res.status(404).send(`Product with id ${req.params.id} was not found`);
 }
 
-export function addProduct(req: Request, res: Response): void {
-  const status = dataService.addProduct(req.body.categoryId, req.body.name, req.body.itemsInStock);
-  if (status.success) {
-    res.status(201).send('Product added successfully');
-  } else {
-    res.status(409).send(status.error);
-  }
+export async function addProduct(req: Request, res: Response): Promise<void> {
+  const status = await dataService.addProduct(req.body.categoryId, req.body.name, req.body.itemsInStock);
+  if (status.success) res.status(201).send("Product added successfully");
+  else res.status(409).send(status.error);
 }
 
-export function editProduct(req: Request, res: Response): void {
-  const status = dataService.editProduct(req.params.id, req.body.categoryId, req.body.name, req.body.itemsInStock);
-  if (status.success) {
-    res.status(200).send('Product edited successfully');
-  } else {
+export async function editProduct(req: Request, res: Response): Promise<void> {
+  const status = await dataService.editProduct(req.params.id, req.body.categoryId, req.body.name, req.body.itemsInStock);
+  if (status.success) res.status(200).send("Product edited successfully");
+  else
     switch (status.errorCategory) {
       case ErrorCategory.NotFound:
         res.status(404).send(status.error);
@@ -42,14 +36,10 @@ export function editProduct(req: Request, res: Response): void {
         res.status(409).send(status.error);
         break;
     }
-  }
 }
 
-export function deleteProduct(req: Request, res: Response): void {
-  const status = dataService.deleteProduct(req.params.id);
-  if (status.success) {
-    res.status(204).send('Product deleted successfully');
-  } else {
-    res.status(404).send(status.error);
-  }
+export async function deleteProduct(req: Request, res: Response): Promise<void> {
+  const status = await dataService.deleteProduct(req.params.id);
+  if (status.success) res.status(204).send("Product deleted successfully");
+  else res.status(404).send(status.error);
 }
