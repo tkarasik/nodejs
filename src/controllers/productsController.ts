@@ -3,7 +3,7 @@ import { ErrorCategory } from '../utils/actionStatus';
 import { DataService } from '../services/dataService';
 import createLogger from '../middleware/logger';
 
-const dataService = new DataService();
+const dataService = DataService.getInstance();
 const logger = createLogger('products');
 
 export async function getProducts(req: Request, res: Response): Promise<void> {

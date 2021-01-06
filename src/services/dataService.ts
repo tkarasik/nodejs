@@ -8,6 +8,16 @@ export class DataService {
   private _categories: Category[] = [];
   private _products: Product[] = [];
   private _init = this.loadData();
+  private static _instance: DataService;
+
+  private constructor() {}
+
+  static getInstance(): DataService {
+    if (!DataService._instance) {
+      DataService._instance = new DataService();
+    }
+    return DataService._instance;
+  }
 
   async loadData(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -25,9 +35,9 @@ export class DataService {
                 category = new Category(product.categoryName);
                 this._categories.push(category);
               }
-               this._products.push(
-                 new Product(category.id, product.name, product.itemsInStock)
-               );
+              this._products.push(
+                new Product(category.id, product.name, product.itemsInStock)
+              );
             });
             resolve();
           }
